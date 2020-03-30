@@ -120,13 +120,5 @@ int graph_print(FILE *pf, const Graph *g);
 */
 Status graph_readFromFile(FILE *fin, Graph *g);
 
-/**
-* @brief Returns a copy from the node in that position
-*
-* @param index the index of the node
-* @param g Pointer to the graph
-* @return Node or NULL
-*/
-Node *graph_getNodeFromPosition(const Graph *g, long index);
 
 #endif /* GRAPH_H */

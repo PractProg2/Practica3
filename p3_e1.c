@@ -1,5 +1,4 @@
-#include "queue.h"
-#include "element.h"
+#include "queue_fp.h"
 #include "graph.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +11,8 @@ int main(int argc, char* argv[]){
     FILE *fin = NULL;
     int tam = 0;
     int i;
+    long *array = NULL;
+    Status st = OK;
 
     if (argc < 1 || argv[1] == NULL){
         fprintf(stderr, "<Falta introducir el nombre del fichero que se quiere leer>\n");
@@ -28,22 +29,33 @@ int main(int argc, char* argv[]){
     }
     /* Abrimos el fichero */
     fin = fopen(argv[1], "r");
-    if (!fin ) return ERROR;
+    if (!fin ){
+        queue_free(colaNodos);
+        graph_free(grafo);
+        return -1;
+    }
     /* Leemos del fichero */
     graph_readFromFile(fin, grafo);
 
     /* Insertamos los nodos del grafo en una cola */
-    for (i=0; i<graph_getNumberOfNodes(grafo); i++){
-        nodo = graph_getNodeFromPosition(grafo, i);
-        queue_insert(colaNodos, nodo);
+    array = graph_getNodesId(grafo);
+    if (!array){
+        queue_free(colaNodos);
+        graph_free(grafo);
+        fclose(fin);
+        return -1;
+    }
+    for (i=0; i<graph_getNumberOfNodes(grafo) && st == OK; i++){
+        nodo = graph_getNode(grafo, array[i]);
+        st = queue_insert(colaNodos, nodo);
         node_free(nodo);
     }
 
     /* Actualizamos label en los nodos del grafo a BLACK */
-    for (i=0; i<graph_getNumberOfNodes(grafo); i++){
-        nodo = graph_getNodeFromPosition(grafo, i);
+    for (i=0; i<graph_getNumberOfNodes(grafo) && st == OK; i++){
+        nodo = graph_getNode(grafo, array[i]);
         node_setLabel(nodo, BLACK);
-        graph_setNode(grafo, nodo);
+        st = graph_setNode(grafo, nodo);
         node_free(nodo);
     }
 
@@ -68,6 +80,7 @@ int main(int argc, char* argv[]){
 
     printf("\nQueue size: %d\n", queue_size(colaNodos));
 
+    free(array);
     graph_free(grafo);
     queue_free(colaNodos);
     fclose(fin);

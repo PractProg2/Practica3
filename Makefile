@@ -2,12 +2,17 @@ CC = gcc
 CFLAG = -g -Wall -ansi -pedantic
 
 
-all: p3_e1
+all: p3_e1 p3_e2
 
-p3_e1: p3_e1.o node.o graph.o element.o queue.o
+p3_e1: p3_e1.o node.o graph.o queue_fp.o
 
 
-	$(CC) $(CFLAGS) p3_e1.o node.o graph.o element.o queue.o -o p3_e1
+	$(CC) $(CFLAGS) p3_e1.o node.o graph.o queue_fp.o -o p3_e1
+
+p3_e2: p3_e2.o node.o graph.o queue_fp.o
+
+
+	$(CC) $(CFLAGS) p3_e2.o node.o graph.o queue_fp.o -o p3_e2
 
 
 
@@ -19,18 +24,19 @@ p3_e1.o: p3_e1.c types.h
 
 	$(CC) $(CFLAGS) -c p3_e1.c
 
+p3_e2.o: p3_e2.c types.h
+
+	$(CC) $(CFLAGS) -c p3_e2.c
+
 
 graph.o: graph.c graph.h node.h types.h
 
 	$(CC) $(CFLAGS) -c graph.c
 
-element.o: element.c element.h types.h
 
-	$(CC) $(CFLAGS) -c element.c
+queue_fp.o: queue_fp.c queue_fp.h types.h 
 
-queue.o: queue.c queue.h types.h element.h
-
-	$(CC) $(CFLAGS) -c queue.c
+	$(CC) $(CFLAGS) -c queue_fp.c
 
 clean: 
-	rm -f *.o p3_e1
+	rm -f *.o p3_e1 p3_e2

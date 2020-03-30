@@ -327,11 +327,6 @@ Status graph_readFromFile(FILE *fin, Graph *g){
 }
 
 
-Node *graph_getNodeFromPosition(const Graph *g, long index){
-    Node *aux = NULL;
 
-    if (!g) return NULL;
-    
-    aux = node_copy(g->nodes[index]);
-    return aux;
-}
+
+
