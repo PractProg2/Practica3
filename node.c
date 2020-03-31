@@ -23,6 +23,7 @@ struct _Node{
     long id;           /*!<Node id */
     int nConnect;      /*!<Node number of connections */
     Label label;       /*!<Node state */
+    long predecessorid;     /*!<Node predecessor */
 };
 
 Node *node_init()
@@ -37,6 +38,7 @@ Node *node_init()
     n->id = -1;
     n->nConnect = 0;
     n->label = WHITE;
+    n->predecessorid = -1;
 
     return n;
 }
@@ -77,6 +79,12 @@ Label node_getLabel(const Node *n)
         return -1;
 
     return n->label;
+}
+
+long node_getPredecessorId(const Node *n){
+    if (!n) return -1;
+
+    return n->predecessorid;
 }
 
 Status node_setLabel(Node *n, Label l)
@@ -123,6 +131,13 @@ Status node_setNConnect(Node *n, const int cn)
     return OK;
 }
 
+Status node_setPredecessorId(Node *n, long preid){
+    if (!n || preid < 0) return ERROR;
+
+    n->predecessorid = preid;
+    return OK;
+}
+
 /* En caso de error devolvemos 27*/
 int node_cmp(const void *n1, const void *n2)
 {
@@ -156,6 +171,7 @@ void *node_copy(const void *src)
     aux->id = n->id;
     aux->label = n->label;
     aux->nConnect = n->nConnect;
+    aux->predecessorid = n->predecessorid;
 
     return aux;
 }
@@ -168,5 +184,5 @@ int node_print(FILE *pf, const void *n)
         return -1;
     }
     Node *aux = (Node *)n;
-    return fprintf(pf, "[%s, %ld, %d, %d]", aux->name, aux->id, aux->label, aux->nConnect);
+    return fprintf(pf, "[%s, %ld, %ld, %d, %d]", aux->name, aux->id, aux->predecessorid, aux->label, aux->nConnect);
 }

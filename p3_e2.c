@@ -12,7 +12,7 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
     Queue *cola = NULL, *colaAux = NULL;
     Node *aux = NULL, *comp_nodo = NULL;
     int i, num, t, CFLAG;
-    long *array = NULL;
+    long *array = NULL, predId = -1, *graphArray = NULL;
 
     if (!pg || ini_id < 0 || end_id < 0 || !nodestraversed) return ERROR;
 
@@ -24,9 +24,9 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
         queue_free(cola);
         return ERROR;
     }
-
+    graphArray = graph_getNodesId(pg);
     for(i=0; i<graph_getNumberOfNodes(pg); i++){
-        aux = graph_getNodeFromPosition(pg, i);
+        aux = graph_getNode(pg, graphArray[i]);
         if (node_getId(aux) == ini_id){
             node_setLabel(aux, BLACK);
             queue_insert(colaAux, aux);
@@ -35,16 +35,12 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
             node_setLabel(aux, WHITE);
         }
         graph_setNode(pg, aux);
-        node_free(aux);
-    }
-
-    for (i=0; i<graph_getNumberOfNodes(pg); i++){
-        aux = graph_getNodeFromPosition(pg, i);
         queue_insert(cola, aux);
         node_free(aux);
     }
 
-    
+    free(graphArray);
+  
     while (queue_isEmpty(colaAux) == FALSE){
         comp_nodo = queue_extract(colaAux);
         aux = queue_extract(cola);
@@ -63,6 +59,7 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
         }
 
         array = graph_getConnectionsFrom(pg, node_getId(aux));
+        predId = node_getId(aux);
         num = graph_getNumberOfConnectionsFrom(pg, node_getId(aux));
         for (i=0; i<num; i++){
             node_free(aux);
@@ -83,6 +80,7 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
                 strcat(nodestraversed, "    ");
                 strcat(nodestraversed, node_getName(aux));
                 node_setLabel(aux, BLACK);
+                node_setPredecessorId(aux, predId);
 
                 if (array[i] == end_id){
                     free(array);                           
@@ -99,6 +97,7 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
                 queue_insert(cola, aux);
             }
         }
+        
         free(array);
 
         node_free(aux);

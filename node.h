@@ -74,6 +74,12 @@ int node_getConnect (const Node * n);
 */
 Label node_getLabel (const Node*n);
 /**
+* @brief Gets the predecessor id of a given node.
+* @param Node address
+* @return Returns the predecessor id of a given node, or -1 in case of error
+*/
+long node_getPredecessorId(const Node *n);
+/**
 * @brief Modifies the label of a given node
 * @param n Node address
 * @param id New node label
@@ -102,6 +108,13 @@ Status node_setName (Node *n, const char *name);
 * @return Returns OK or ERROR in case of error
 */
 Status node_setNConnect (Node *n, const int cn);
+/**
+* @brief Modifies the predecessor id of a given node
+* @param n Node address
+* @param preid Id of the predecessor id
+* @return Returns OK or ERROR in case of error
+*/
+Status node_setPredecessorId(Node *n, long preid);
 /**
 * @brief Compares two nodes by the id and then the name.
 * @param n1,n2 Nodes to compare.
