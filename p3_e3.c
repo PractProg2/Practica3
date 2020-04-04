@@ -3,10 +3,94 @@
 #include <string.h>
 #include "queue_fp.h"
 #include "graph.h"
-
+#include "stack_fp.h"
 
 #define MAXSTRING 65536
 
+int printNode(FILE *pf, Graph *g, long actualid, long *predid){
+    Node *aux = NULL;
+    int cont = 0;
+    
+    if (!pf || !g || actualid < 0 || !predid) return -1;
+
+    aux = graph_getNode(g, actualid);
+    if (!aux) return -1;
+
+    *predid = node_getPredecessorId(aux);
+    cont = node_print(pf, aux);
+
+    node_free(aux);
+    return cont;
+}
+
+int printNode2(FILE *pf, Graph *g, long actualid){
+    Node *aux = NULL;
+    int cont = 0;
+    
+    if (!pf || !g || actualid < 0) return -1;
+
+    aux = graph_getNode(g, actualid);
+    if (!aux) return -1;
+
+    cont = node_print(pf, aux);
+
+    node_free(aux);
+    return cont;
+}
+
+int pathToFrom(FILE *dev, Graph *g, long orignid, long toid){
+    long *pred = NULL;
+    int cont = 0;
+    Node *nodo = NULL;
+
+    if (!dev || !g || orignid < 0 || toid < 0) return -1;
+
+    pred = (long *)malloc(sizeof(long));
+    if (!pred) return -1;
+
+    *pred = toid;
+    while (*pred > 0){
+        nodo = graph_getNode(g, *pred);
+        if (*pred == orignid){
+            cont += printNode(dev, g, node_getId(nodo), pred);
+            node_free(nodo);
+            free(pred);
+            return cont;
+        } 
+        cont += printNode(dev, g, node_getId(nodo), pred);
+        node_free(nodo);
+
+        
+    }
+    free(pred);
+    return -1;
+}
+
+int pathFromTo(FILE *dev, Graph *g, long orignid, long toid){
+    int cont = 0;
+    long predid = 0;
+    Node *nodo = NULL;
+
+    if (!dev || !g || orignid < 0 || toid < 0) return -1;
+
+    if (orignid == toid){
+        cont = printNode2(dev, g, toid);
+        return cont;
+    }
+
+    nodo = graph_getNode(g, toid);
+    if (!nodo) return -1;
+
+    predid = node_getPredecessorId(nodo);
+
+    cont = pathFromTo(dev, g, orignid, predid);
+    if (cont == 1) return -1;
+
+    cont += node_print(dev, nodo);
+    node_free(nodo);
+
+    return cont;
+}
 
 Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraversed){
     Queue *colaAux = NULL;
@@ -78,16 +162,17 @@ Status graph_breadthFirst (Graph *pg,long ini_id,long end_id,char *nodestraverse
     return OK;
 }
 
+
+
 int main(int argc, char *argv[]){
     char *salida = NULL;
-    char *f = NULL;
     long id_ini, id_end;
     Graph *grafo = NULL;
     FILE *fin = NULL;
     Status st = OK;
 
     if (argc < 4){
-        printf("./p3_e2 <nombre_fichero> <Id entrada> <Id salida>.\n");
+        printf("./p3_e3 <nombre_fichero> <Id entrada> <Id salida>.\n");
         return -1;
     }
 
@@ -110,16 +195,26 @@ int main(int argc, char *argv[]){
     salida = (char *)calloc (MAXSTRING, sizeof(char));
     if (!salida) return -1;
 
+
     graph_breadthFirst(grafo, id_ini, id_end, salida);
 
-    printf("%s\n", salida);
+    printf("\n%s\n", salida);
+
+
+    fprintf(stdout, "\nFrom Origin to End:\n");
+
+    pathFromTo(stdout, grafo, id_ini, id_end);
+
+    fprintf(stdout, "\n");
+
+    fprintf(stdout, "\nFrom End to Origin:\n");
+
+    pathToFrom(stdout, grafo, id_ini, id_end);
+
+    fprintf(stdout, "\n");
 
     fclose(fin);
     free(salida);
     graph_free(grafo);
     return 0;
 }
-
-
-
-
