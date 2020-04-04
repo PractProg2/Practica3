@@ -198,9 +198,6 @@ int main(int argc, char *argv[]){
 
     graph_breadthFirst(grafo, id_ini, id_end, salida);
 
-    printf("\n%s\n", salida);
-
-
     fprintf(stdout, "\nFrom Origin to End:\n");
 
     pathFromTo(stdout, grafo, id_ini, id_end);
