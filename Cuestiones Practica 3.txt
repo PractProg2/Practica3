@@ -1,0 +1,15 @@
+Podemos observar que la búsqueda en anchura realiza un recorrido del grafo por niveles. Por ejemplo, tenemos un 
+nodo n en los que se visitan sus nodos adyacentes (nivel 1).
+A continuación, se visitan los nodos a "distancia 2" del nodo n, luego los nodos a "distancia 3" y así sucesivamente hasta encontrar el nodo deseado.
+Para realizar este algoritmo sería necesario utilizar el TAD cola, en el que el primero en entrar es el primero en salir, conseguiríamos el efecto de buscar los nodos por niveles.
+
+A diferencia de la búsqueda en anchura, la búsqueda en profundidad realiza un recorrido del árbol por ramas. En primer lugar, tenemos 
+un nodo n, el cual buscamos sus nodos adyacentes, visita el primero y busca sus nodos adyacentes y repetimos esta misma acción
+hasta que no encuentre más nodos adyacentes. En consecuencia, de este proceso volvemos hasta el segundo nodo adyacente del nodo n
+ y repetimos el mismo proceso hasta encontrar el nodo deseado. Para realizar este algoritmo, sería necesario utilizar el TAD pila en el que metes en la pila el ultimo nodo adyacente,
+y ese mismo nodo, después de visitarlo, es el primero en salir.
+
+A nivel práctico podemos observar que dependiendo de la situación, el resultado varía considerablemente. Ya que en la búsqueda de
+profundidad, buscar un nodo adyacente del principal, si no es el primero entre los nodos adyacentes en los que se buscan, puede 
+suponer que la búsqueda se alargue considerablemente comparándolo con el de anchura. Lo mismo pasaría pero al revés en el caso en el que el nodo
+ deseado se encuentre a varios niveles de nodo principal.
